@@ -10,7 +10,6 @@ const getMessage = async (req, rsp) => {
     token,
     userId,
     messageId,
-    count
   } = req.body;
 
   const headers = generateHeaders(token);
@@ -34,7 +33,22 @@ const getMessage = async (req, rsp) => {
     messageUrl,
     {headers}
   )
-    .then(({data}) => rsp.json(data))
+    .then(({data}) => {
+      if(!Array.isArray(data)){
+        data = [data];
+      }
+      const messages = data.map(message => ({
+        messageId: message?.id,
+        content: message?.content,
+        author: message?.author?.username ?
+          `${message.author.username}#${message.author?.discriminator}`
+          :
+          null,
+        timestamp: message?.timestamp
+      }));
+      messages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
+      rsp.json({messages});
+    })
     .catch(e => {
       rsp.json({error: e});
       console.log(e)
