@@ -1,5 +1,9 @@
 const axios = require("axios");
 const {discordApiUrl} = require("../../data");
+const {
+  generateHeaders,
+  getUserDmChannelId
+} = require("../../utils");
 
 const getMessage = async (req, rsp) => {
   const {
@@ -9,19 +13,18 @@ const getMessage = async (req, rsp) => {
     count
   } = req.body;
 
-  const headers = {
-    Authorization: `Bot ${token}`
-  };
+  const headers = generateHeaders(token);
+  const dmChannelData = await getUserDmChannelId({
+    token,
+    userId
+  });
   
-  const dmChannelId = await axios.post(
-    `${discordApiUrl}/users/@me/channels`,
-    {recipient_id: userId},
-    {headers}
-  )
-    .then(({data}) => data?.id);
-  
+  const {dmChannelId} = dmChannelData;
   if(!dmChannelId){
-    return rsp.json({error: "User not found"});
+    return rsp.json({
+      error: "User not found",
+      debug: dmChannelData.error
+    });
   }
 
   const messageUrl = `${discordApiUrl}/channels/${dmChannelId}/messages`
@@ -32,7 +35,10 @@ const getMessage = async (req, rsp) => {
     {headers}
   )
     .then(({data}) => rsp.json(data))
-    .catch(e => console.log(e));
+    .catch(e => {
+      rsp.json({error: e});
+      console.log(e)
+    });
 
 };
 
