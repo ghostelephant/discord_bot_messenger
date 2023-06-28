@@ -1,0 +1,1 @@
+module.exports = "https://discord.com/api/v10";
