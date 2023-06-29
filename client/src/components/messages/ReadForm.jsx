@@ -69,8 +69,8 @@ const ReadForm = ({serverUrl, setMessages, spaceStyle}) => {
       <div style = {spaceStyle}>
         <p>
           <label htmlFor = "messageId">
-            Message ID<br />
-            (optional -- if not included, will pull the most recent 50 messages)
+            Message ID:<br />
+            (optional -- if not included, will pull the most recent up-to-50 messages)
           </label>
         </p>
         <p>

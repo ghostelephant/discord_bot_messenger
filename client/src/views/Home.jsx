@@ -10,7 +10,7 @@ const Home = ({serverUrl}) => {
 
   return (
     <>
-      <h1 style={{textAlign: "center"}}>
+      <h1 style = {{textAlign: "center"}}>
         Discord Bot Messenger
       </h1>
 
@@ -20,16 +20,21 @@ const Home = ({serverUrl}) => {
         spaceStyle = {spaceStyle}
       />
 
-      <hr style = {spaceStyle} />
-
       {messages?.length ?
-        messages.map(message =>
-          <MessageDisplay
-            key = {message.messageId}
-            message = {message}
-            spaceStyle = {spaceStyle}
-          />
-        )
+        <>
+          <hr style = {spaceStyle} />
+          <h2 style = {{textAlign: "center"}}>
+            Messages:
+          </h2>
+
+          {messages.map(message =>
+            <MessageDisplay
+              key = {message.messageId}
+              message = {message}
+              spaceStyle = {spaceStyle}
+            />
+          )}
+        </>
         :
         <></>
       }
@@ -44,6 +49,17 @@ const Home = ({serverUrl}) => {
         :
         <></>
       }
+
+      <hr style = {spaceStyle} />
+      <p style = {{textAlign: "center"}}>
+        <a
+          href = "https://github.com/ghostelephant/discord_bot_messenger"
+          target = "_blank"
+          rell = "noreferrer"
+        >
+          View source code on GitHub
+        </a>
+      </p>
     </>
   );
 };
