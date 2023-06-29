@@ -1,6 +1,7 @@
+import axios from "axios";
 import {useState} from "react";
 
-const ReadForm = () => {
+const ReadForm = ({serverUrl, setMessages, spaceStyle}) => {
   const blankInputs = {
     token: "",
     userId: "",
@@ -18,15 +19,22 @@ const ReadForm = () => {
   
   const handleSubmit = e => {
     e.preventDefault();
-    console.log(inputs);
-    setInputs(blankInputs);
+    axios.post(
+      `${serverUrl}/api/messages/read`,
+      inputs
+    )
+      .then(rsp => {
+        setMessages(rsp?.data?.messages)
+        setInputs(blankInputs);
+      })
+      .catch(e => console.error(e));
   };
 
   return (
     <form
       onSubmit = {handleSubmit}
     >
-      <div style = {{margin: "10px"}}>
+      <div style = {spaceStyle}>
         <p>
           <label htmlFor = "token">
             Discord Bot Token:
@@ -42,7 +50,7 @@ const ReadForm = () => {
         </p>
       </div>
 
-      <div style = {{margin: "10px"}}>
+      <div style = {spaceStyle}>
         <p>
           <label htmlFor = "userId">
             Discord User ID:
@@ -58,7 +66,7 @@ const ReadForm = () => {
         </p>
       </div>
 
-      <div style = {{margin: "10px"}}>
+      <div style = {spaceStyle}>
         <p>
           <label htmlFor = "messageId">
             Message ID<br />
@@ -77,7 +85,7 @@ const ReadForm = () => {
 
       <button
         type = "submit"
-        style = {{margin: "10px"}}
+        style = {spaceStyle}
       >
         Submit
       </button>

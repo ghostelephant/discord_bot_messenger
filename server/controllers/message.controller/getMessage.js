@@ -34,7 +34,7 @@ const getMessage = async (req, rsp) => {
     {headers}
   )
     .then(({data}) => {
-      if(!Array.isArray(data)){
+      if(messageId){
         data = [data];
       }
       const messages = data.map(message => ({

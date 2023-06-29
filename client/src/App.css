@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+.space{
+  margin: "10px"
+}
+
 /* .App {
   text-align: center;
 }
