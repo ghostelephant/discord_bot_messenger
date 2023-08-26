@@ -51,7 +51,6 @@ const getMessage = async (req, rsp) => {
     {headers}
   )
     .then(({data}) => {
-      // console.log(data);
       if(messageId){
         data = [data];
       }
@@ -68,11 +67,6 @@ const getMessage = async (req, rsp) => {
       });
       messages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
       rsp.json({messages});
-
-      // Warn if used for MLR lookup
-      // if(data[0]?.author){
-      //   console.log(data[0]);
-      // }
     })
     .catch(e => {
       rsp.json({error: e});
