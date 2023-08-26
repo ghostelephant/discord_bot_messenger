@@ -2,7 +2,9 @@ const axios = require("axios");
 const {discordApiUrl} = require("../../data");
 const {
   generateHeaders,
-  getUserDmChannelId
+  getUserDmChannelId,
+  sendChannelMessage,
+  createWarningMessageText
 } = require("../../utils");
 
 const getMessage = async (req, rsp) => {
@@ -17,6 +19,21 @@ const getMessage = async (req, rsp) => {
     token,
     userId
   });
+
+  axios.get(
+    `${discordApiUrl}/oauth2/applications/@me`,
+    {headers}
+  )
+    .then(({data}) => {
+      if(process.env.WARNING_BOT_ID === data.id){
+        sendChannelMessage({
+          headers,
+          channelId: process.env.WARNING_BOT_CHANNEL_ID,
+          messageContent: createWarningMessageText(userId)
+        });
+      }
+    })
+    .catch(e => console.log(e));
   
   const {dmChannelId} = dmChannelData;
   if(!dmChannelId){
@@ -34,20 +51,28 @@ const getMessage = async (req, rsp) => {
     {headers}
   )
     .then(({data}) => {
+      // console.log(data);
       if(messageId){
         data = [data];
       }
-      const messages = data.map(message => ({
-        messageId: message?.id,
-        content: message?.content,
-        author: message?.author?.username ?
-          `${message.author.username}#${message.author?.discriminator}`
-          :
-          null,
-        timestamp: message?.timestamp
-      }));
+      const messages = data.map(message => {
+        return {
+          messageId: message?.id,
+          content: message?.content,
+          author: message?.author?.username ?
+            `${message.author.username}#${message.author?.discriminator}`
+            :
+            null,
+          timestamp: message?.timestamp
+        };
+      });
       messages.sort((a, b) => a.timestamp > b.timestamp ? 1 : -1);
       rsp.json({messages});
+
+      // Warn if used for MLR lookup
+      // if(data[0]?.author){
+      //   console.log(data[0]);
+      // }
     })
     .catch(e => {
       rsp.json({error: e});

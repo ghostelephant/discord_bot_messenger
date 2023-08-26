@@ -14,6 +14,10 @@ const Home = ({serverUrl}) => {
         Discord Bot Messenger
       </h1>
 
+      <p style={{color: "firebrick", textAlign: "center"}}>
+        Please do not use this site to cheat at MLR!
+      </p>
+
       <ReadForm
         serverUrl = {serverUrl}
         setMessages = {setMessages}
@@ -55,7 +59,7 @@ const Home = ({serverUrl}) => {
         <a
           href = "https://github.com/ghostelephant/discord_bot_messenger"
           target = "_blank"
-          rell = "noreferrer"
+          rel = "noreferrer"
         >
           View source code on GitHub
         </a>

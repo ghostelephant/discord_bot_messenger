@@ -9,26 +9,32 @@ const sendMessage = async (req, rsp) => {
   const {
     token,
     userId,
-    messageId,
+    channelId,
+    // messageId,
     messageContent
   } = req.body;
 
   const headers = generateHeaders(token);
-  const dmChannelData = await getUserDmChannelId({
-    token,
-    userId
-  });
   
-  const {dmChannelId} = dmChannelData;
-  if(!dmChannelId){
+  let debugError;
+  if(!channelId && userId){
+    const dmChannelData = await getUserDmChannelId({
+      token,
+      userId
+    });
+    channelId = dmChannelData.dmChannelId;
+    debugError = dmChannelData?.error;
+  }
+  
+  if(!channelId){
     return rsp.json({
-      error: "User not found",
-      debug: dmChannelData.error
+      error: "User / channel not found",
+      debug: debugError
     });
   }
 
   axios.post(
-    `${discordApiUrl}/channels/${dmChannelId}/messages`,
+    `${discordApiUrl}/channels/${channelId}/messages`,
     {content: messageContent},
     {headers}
   )
